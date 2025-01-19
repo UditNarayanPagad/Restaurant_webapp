@@ -14,6 +14,8 @@ import { FoodsService } from "./foods/foods.service";
 import { FoodsResolver } from "./foods/foods.resolver";
 import { CloudinaryService } from "./cloudinary/cloudinary.service";
 import { CloudinaryModule } from "./cloudinary/cloudinary.module";
+import { RabbitMQModule } from "./rabbitmq/rabbitmq.module";
+import { OrdersConsumer } from "./orders/orders.consumer";
 
 @Module({
   imports: [
@@ -27,9 +29,10 @@ import { CloudinaryModule } from "./cloudinary/cloudinary.module";
       },
     }),
     EmailModule,
-    CloudinaryModule
+    CloudinaryModule,
+    RabbitMQModule
   ],
-  controllers: [],
+  controllers: [OrdersConsumer],
   providers: [
     RestaurantService,
     ConfigService,

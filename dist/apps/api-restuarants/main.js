@@ -40,6 +40,8 @@ const foods_service_1 = __webpack_require__(25);
 const foods_resolver_1 = __webpack_require__(28);
 const cloudinary_service_1 = __webpack_require__(26);
 const cloudinary_module_1 = __webpack_require__(33);
+const rabbitmq_module_1 = __webpack_require__(35);
+const orders_consumer_1 = __webpack_require__(37);
 let restaurantModule = class restaurantModule {
 };
 exports.restaurantModule = restaurantModule;
@@ -56,9 +58,10 @@ exports.restaurantModule = restaurantModule = tslib_1.__decorate([
                 },
             }),
             email_module_1.EmailModule,
-            cloudinary_module_1.CloudinaryModule
+            cloudinary_module_1.CloudinaryModule,
+            rabbitmq_module_1.RabbitMQModule
         ],
-        controllers: [],
+        controllers: [orders_consumer_1.OrdersConsumer],
         providers: [
             restaurant_service_1.RestaurantService,
             config_1.ConfigService,
@@ -1306,6 +1309,78 @@ exports.CloudinaryProvider = CloudinaryProvider;
 
 /***/ }),
 /* 35 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RabbitMQModule = void 0;
+const tslib_1 = __webpack_require__(1);
+// filepath: /C:/Users/DELL/Desktop/Food-Delivery-WebApp/apps/api-restaurants/src/rabbitmq/rabbitmq.module.ts
+const common_1 = __webpack_require__(5);
+const microservices_1 = __webpack_require__(36);
+let RabbitMQModule = class RabbitMQModule {
+};
+exports.RabbitMQModule = RabbitMQModule;
+exports.RabbitMQModule = RabbitMQModule = tslib_1.__decorate([
+    (0, common_1.Module)({
+        imports: [
+            microservices_1.ClientsModule.register([
+                {
+                    name: 'ORDER_SERVICE',
+                    transport: microservices_1.Transport.RMQ,
+                    options: {
+                        urls: ['amqps://xzrrpigt:xKbS1zIs3Kxs8ZLsriEtlSqHAcP9uRp9@duck.lmq.cloudamqp.com/xzrrpigt'],
+                        queue: 'orders_queue',
+                        queueOptions: {
+                            durable: false,
+                        },
+                    },
+                },
+            ]),
+        ],
+        exports: [microservices_1.ClientsModule],
+    })
+], RabbitMQModule);
+
+
+/***/ }),
+/* 36 */
+/***/ ((module) => {
+
+module.exports = require("@nestjs/microservices");
+
+/***/ }),
+/* 37 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OrdersConsumer = void 0;
+const tslib_1 = __webpack_require__(1);
+// filepath: /C:/Users/DELL/Desktop/Food-Delivery-WebApp/apps/api-restaurants/src/orders/orders.consumer.ts
+const common_1 = __webpack_require__(5);
+const microservices_1 = __webpack_require__(36);
+let OrdersConsumer = class OrdersConsumer {
+    async handleOrderCreated(data) {
+        // Process the order
+        console.log('Order received:', data);
+    }
+};
+exports.OrdersConsumer = OrdersConsumer;
+tslib_1.__decorate([
+    (0, microservices_1.EventPattern)('order_created'),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof Record !== "undefined" && Record) === "function" ? _a : Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], OrdersConsumer.prototype, "handleOrderCreated", null);
+exports.OrdersConsumer = OrdersConsumer = tslib_1.__decorate([
+    (0, common_1.Controller)()
+], OrdersConsumer);
+
+
+/***/ }),
+/* 38 */
 /***/ ((module) => {
 
 module.exports = require("express");
@@ -1348,7 +1423,7 @@ const tslib_1 = __webpack_require__(1);
 const core_1 = __webpack_require__(2);
 const path_1 = __webpack_require__(3);
 const restaurant_module_1 = __webpack_require__(4);
-const express = tslib_1.__importStar(__webpack_require__(35));
+const express = tslib_1.__importStar(__webpack_require__(38));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(restaurant_module_1.restaurantModule);
     app.use(express.json({ limit: "50mb" }));
